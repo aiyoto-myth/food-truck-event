@@ -193,7 +193,7 @@ a{color:var(--accent)}
   <ul class="rules" style="margin-top:0">
     <li><span class="dot go"></span><div><b>Break-even under 60% of a normal day: go. Over 80%: say no.</b> From KitchenNmbrs' guide <a href="https://kitchennmbrs.app/en/knowledge-base/anyone-who-sells-food/how-do-i-know-if-an-event-or-festival-is-worth-it-financially" target="_blank" rel="noopener">"How do I know if an event or festival is worth it financially"</a>. The room between 60% and 80% is for a bad turnout, rain, or a line that moves slower than you hoped.</div></li>
     <li><span class="dot go"></span><div><b>Sales should be at least 4× what you pay the organizer.</b> The UK caterers' association NCASS calls this <a href="https://www.ncass.org.uk/news/the-times-four-rule-a-smart-approach-to-festival-pitch-fees/" target="_blank" rel="noopener">the "Times Four" rule</a>.</div></li>
-    <li><span class="dot mid"></span><div><b>Commission: 10% or less is fair; never over 15%; over 10% should come with a sales guarantee; a flat fee should stay under US$300 a day.</b> From the <a href="https://wafoodtrucks.squarespace.com/event-information" target="_blank" rel="noopener">Washington State Food Truck Association's event guidance</a>.</div></li>
+    <li><span class="dot mid"></span><div><b>Commission: 10% or less is fair; never over 15%; over 10% should come with a sales guarantee; a flat fee should stay under US$300 a day; and an event should charge a flat fee or a commission, never both.</b> From the <a href="https://wafoodtrucks.squarespace.com/event-information" target="_blank" rel="noopener">Washington State Food Truck Association's event guidance</a>.</div></li>
     <li><span class="dot no"></span><div><b>A slow day should not cost you money</b>, and the event should beat a normal day at your usual spot if you gave a number for that.</div></li>
   </ul>
   <p class="hint">These are rules of thumb from the trade, not advice. You know your truck; the numbers just make the guess honest.</p>
@@ -320,6 +320,7 @@ function analyze(p){
     var lvl = p.feePct<=10 ? 'go' : (p.feePct<=15 && p.guarantee>0 ? 'mid' : 'no');
     rule(lvl, 'Commission '+pct(p.feePct)+'. '+(p.feePct<=10?'Fair by the usual guidance.':(p.feePct<=15?(p.guarantee>0?'High, but they offer a sales guarantee.':'Over 10% with no sales guarantee: ask for one or a lower rate.'):'Over 15%: above what the trade guidance says is ever reasonable.')));
   }
+  if(p.feeFlat>0 && p.feePct>0 && p.feeMode==='both') rules.push({level:'mid', fair:true, text:'They charge a flat fee and a commission. The Washington State Food Truck Association says events should charge one or the other, never both: worth asking them to drop one.'});
   if(CUR==='$' && p.feeFlat>300) rule('mid', 'Flat fee '+money(p.feeFlat)+' is over the $300/day the guidance suggests as a ceiling.');
   if(r.expSales>0) rule(r.at.slow.profit>=0?'go':'no', r.at.slow.profit>=0 ? 'A slow day still leaves you '+money(r.at.slow.profit)+'.' : 'A slow day loses you '+money(-r.at.slow.profit)+(r.at.slow.topUp>0?' even after the guarantee.':'.'));
   if(has(p.normalDayRaw) && r.expSales>0){
@@ -328,7 +329,8 @@ function analyze(p){
   }
   if(r.capped) rule('mid', 'Your line can serve about '+Math.round(r.cap)+' orders in '+p.hrsOpen+' hours, so the busier days are capped at that.');
   r.rules = rules;
-  var reds = rules.filter(function(x){ return x.level==='no'; }).length, ambers = rules.filter(function(x){ return x.level==='mid'; }).length;
+  // fairness notes (fair:true) inform the counter-offer but don't change go / no-go, which is about money
+  var reds = rules.filter(function(x){ return x.level==='no'; }).length, ambers = rules.filter(function(x){ return x.level==='mid' && !x.fair; }).length;
   if(r.expSales<=0) r.verdict = null;
   else if(r.be==null || r.at.mid.profit<=0 || (r.beShare!=null && r.beShare>0.8)) r.verdict = 'no';
   else if(reds===0 && ambers===0) r.verdict = 'go';
