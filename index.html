@@ -108,15 +108,16 @@ a{color:var(--accent)}
       <option value="sports">Sports / concert</option><option value="street">Regular street spot</option><option value="other">Other</option></select></div>
     <div><label for="hrsOpen">Hours serving</label><input type="number" id="hrsOpen" inputmode="decimal" min="0" step="0.5"></div>
     <div><label for="hrsExtra">Hours for travel, setup, teardown</label><input type="number" id="hrsExtra" inputmode="decimal" min="0" step="0.5"></div>
+    <div><label for="cur">Currency</label><select id="cur"><option value="$">$ US</option><option value="C$">$ Canada</option><option value="A$">$ Australia</option><option value="£">£ UK</option><option value="€">€ Euro</option></select></div>
   </div>
 </section>
 
 <section class="step noprint" aria-labelledby="h2s">
   <h2 id="h2s">2. What the organizer charges</h2>
   <div class="grid">
-    <div><label for="feeFlat">Flat fee $ <span class="sub">booth / pitch / application</span></label><input type="number" id="feeFlat" inputmode="decimal" min="0" step="1"></div>
+    <div><label for="feeFlat">Flat fee <span class="sub">booth / pitch / application</span></label><input type="number" id="feeFlat" inputmode="decimal" min="0" step="1"></div>
     <div><label for="feePct">Commission % of sales</label><input type="number" id="feePct" inputmode="decimal" min="0" max="100" step="0.5"></div>
-    <div><label for="guarantee">Sales guarantee $ <span class="sub">if they top you up</span></label><input type="number" id="guarantee" inputmode="decimal" min="0" step="1" placeholder="none"></div>
+    <div><label for="guarantee">Sales guarantee <span class="sub">if they top you up</span></label><input type="number" id="guarantee" inputmode="decimal" min="0" step="1" placeholder="none"></div>
   </div>
   <div style="margin-top:10px"><span style="font-weight:600;font-size:15px">If there is both a flat fee and a commission, you pay</span>
     <div class="seg" role="radiogroup" aria-label="How the fee works">
@@ -133,7 +134,7 @@ a{color:var(--accent)}
     <div><label for="oSlow">Slow day orders</label><input type="number" id="oSlow" inputmode="numeric" min="0" step="1"></div>
     <div><label for="oMid">Normal day orders</label><input type="number" id="oMid" inputmode="numeric" min="0" step="1"></div>
     <div><label for="oBusy">Busy day orders</label><input type="number" id="oBusy" inputmode="numeric" min="0" step="1"></div>
-    <div><label for="ticket">Average order $</label><input type="number" id="ticket" inputmode="decimal" min="0" step="0.25"></div>
+    <div><label for="ticket">Average order</label><input type="number" id="ticket" inputmode="decimal" min="0" step="0.25"></div>
     <div><label for="perHour">Most orders you can serve per hour <span class="sub">optional</span></label><input type="number" id="perHour" inputmode="numeric" min="0" step="1" placeholder="no limit"></div>
   </div>
   <details id="helper">
@@ -154,11 +155,11 @@ a{color:var(--accent)}
     <div><label for="foodPct">Food + packaging, % of sales</label><input type="number" id="foodPct" inputmode="decimal" min="0" max="100" step="0.5"></div>
     <div><label for="cardPct">Card fees, % of sales</label><input type="number" id="cardPct" inputmode="decimal" min="0" max="20" step="0.1"></div>
     <div><label for="staffN">Paid staff (not you)</label><input type="number" id="staffN" inputmode="numeric" min="0" step="1"></div>
-    <div><label for="wage">Their pay per hour $</label><input type="number" id="wage" inputmode="decimal" min="0" step="0.5"></div>
-    <div><label for="fuel">Fuel, propane, generator $</label><input type="number" id="fuel" inputmode="decimal" min="0" step="1"></div>
-    <div><label for="permit">Permits, insurance add-ons $</label><input type="number" id="permit" inputmode="decimal" min="0" step="1"></div>
-    <div><label for="other">Other costs $ <span class="sub">ice, parking, hotel, waste</span></label><input type="number" id="other" inputmode="decimal" min="0" step="1"></div>
-    <div><label for="normalDay">What you'd net on a normal day instead $ <span class="sub">optional</span></label><input type="number" id="normalDay" inputmode="decimal" step="1" placeholder="skip"></div>
+    <div><label for="wage">Their pay per hour</label><input type="number" id="wage" inputmode="decimal" min="0" step="0.5"></div>
+    <div><label for="fuel">Fuel, propane, generator</label><input type="number" id="fuel" inputmode="decimal" min="0" step="1"></div>
+    <div><label for="permit">Permits, insurance add-ons</label><input type="number" id="permit" inputmode="decimal" min="0" step="1"></div>
+    <div><label for="other">Other costs <span class="sub">ice, parking, hotel, waste</span></label><input type="number" id="other" inputmode="decimal" min="0" step="1"></div>
+    <div><label for="normalDay">What you'd net on a normal day instead <span class="sub">optional</span></label><input type="number" id="normalDay" inputmode="decimal" step="1" placeholder="skip"></div>
   </div>
 </section>
 
@@ -192,7 +193,7 @@ a{color:var(--accent)}
   <ul class="rules" style="margin-top:0">
     <li><span class="dot go"></span><div><b>Break-even under 60% of a normal day: go. Over 80%: say no.</b> From KitchenNmbrs' guide <a href="https://kitchennmbrs.app/en/knowledge-base/anyone-who-sells-food/how-do-i-know-if-an-event-or-festival-is-worth-it-financially" target="_blank" rel="noopener">"How do I know if an event or festival is worth it financially"</a>. The room between 60% and 80% is for a bad turnout, rain, or a line that moves slower than you hoped.</div></li>
     <li><span class="dot go"></span><div><b>Sales should be at least 4× what you pay the organizer.</b> The UK caterers' association NCASS calls this <a href="https://www.ncass.org.uk/news/the-times-four-rule-a-smart-approach-to-festival-pitch-fees/" target="_blank" rel="noopener">the "Times Four" rule</a>.</div></li>
-    <li><span class="dot mid"></span><div><b>Commission: 10% or less is fair; never over 15%; over 10% should come with a sales guarantee; a flat fee should stay under $300 a day.</b> From the <a href="https://wafoodtrucks.squarespace.com/event-information" target="_blank" rel="noopener">Washington State Food Truck Association's event guidance</a>.</div></li>
+    <li><span class="dot mid"></span><div><b>Commission: 10% or less is fair; never over 15%; over 10% should come with a sales guarantee; a flat fee should stay under US$300 a day.</b> From the <a href="https://wafoodtrucks.squarespace.com/event-information" target="_blank" rel="noopener">Washington State Food Truck Association's event guidance</a>.</div></li>
     <li><span class="dot no"></span><div><b>A slow day should not cost you money</b>, and the event should beat a normal day at your usual spot if you gave a number for that.</div></li>
   </ul>
   <p class="hint">These are rules of thumb from the trade, not advice. You know your truck; the numbers just make the guess honest.</p>
@@ -229,9 +230,9 @@ var FREE_LOG = 3;
 var GC_CODE = '';             // GoatCounter code; empty = no tracking
 var KEY = 'bc.plan.v1', LOGKEY = 'bc.log.v1', PROKEY = 'bc.pro';
 
-var FIELDS = ['evName','evDate','evType','hrsOpen','hrsExtra','feeFlat','feePct','guarantee','oSlow','oMid','oBusy','ticket','perHour','foodPct','cardPct','staffN','wage','fuel','permit','other','normalDay','att','vendors','buyPct'];
+var FIELDS = ['cur','evName','evDate','evType','hrsOpen','hrsExtra','feeFlat','feePct','guarantee','oSlow','oMid','oBusy','ticket','perHour','foodPct','cardPct','staffN','wage','fuel','permit','other','normalDay','att','vendors','buyPct'];
 var NUMS = {hrsOpen:1,hrsExtra:1,feeFlat:1,feePct:1,guarantee:1,oSlow:1,oMid:1,oBusy:1,ticket:1,perHour:1,foodPct:1,cardPct:1,staffN:1,wage:1,fuel:1,permit:1,other:1,normalDay:1,att:1,vendors:1,buyPct:1};
-var DEFAULTS = {evName:'',evDate:'',evType:'festival',hrsOpen:6,hrsExtra:3,feeFlat:150,feePct:10,guarantee:'',feeMode:'both',oSlow:90,oMid:150,oBusy:210,ticket:14,perHour:'',foodPct:30,cardPct:3,staffN:1,wage:18,fuel:60,permit:0,other:20,normalDay:'',att:'',vendors:'',buyPct:40};
+var DEFAULTS = {cur:'$',evName:'',evDate:'',evType:'festival',hrsOpen:6,hrsExtra:3,feeFlat:150,feePct:10,guarantee:'',feeMode:'both',oSlow:90,oMid:150,oBusy:210,ticket:14,perHour:'',foodPct:30,cardPct:3,staffN:1,wage:18,fuel:60,permit:0,other:20,normalDay:'',att:'',vendors:'',buyPct:40};
 var TYPE_NAME = {festival:'Festival / fair',market:'Market',brewery:'Brewery / winery',community:'Community',corporate:'Corporate',private:'Private / catering',sports:'Sports / concert',street:'Street spot',other:'Other'};
 
 /* ---------- helpers ---------- */
@@ -239,7 +240,8 @@ function $(id){ return document.getElementById(id); }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
 function num(v){ var n = parseFloat(v); return isFinite(n) ? n : 0; }
 function has(v){ return v!=='' && v!=null && isFinite(parseFloat(v)); }
-function money(n){ var s = Math.round(Math.abs(n)).toLocaleString('en-US'); return (n<-0.5?'−$':'$') + s; }
+var CUR = '$';
+function money(n){ var s = Math.round(Math.abs(n)).toLocaleString('en-US'); return (n<-0.5?'−':'') + CUR + s; }
 function pct(n){ return (Math.round(n*10)/10) + '%'; }
 function say(t){ $('live').textContent=''; setTimeout(function(){ $('live').textContent=t; },30); }
 function note(t){ $('actNote').textContent = t; say(t); }
@@ -318,7 +320,7 @@ function analyze(p){
     var lvl = p.feePct<=10 ? 'go' : (p.feePct<=15 && p.guarantee>0 ? 'mid' : 'no');
     rule(lvl, 'Commission '+pct(p.feePct)+'. '+(p.feePct<=10?'Fair by the usual guidance.':(p.feePct<=15?(p.guarantee>0?'High, but they offer a sales guarantee.':'Over 10% with no sales guarantee: ask for one or a lower rate.'):'Over 15%: above what the trade guidance says is ever reasonable.')));
   }
-  if(p.feeFlat>300) rule('mid', 'Flat fee '+money(p.feeFlat)+' is over the $300/day the guidance suggests as a ceiling.');
+  if(CUR==='$' && p.feeFlat>300) rule('mid', 'Flat fee '+money(p.feeFlat)+' is over the $300/day the guidance suggests as a ceiling.');
   if(r.expSales>0) rule(r.at.slow.profit>=0?'go':'no', r.at.slow.profit>=0 ? 'A slow day still leaves you '+money(r.at.slow.profit)+'.' : 'A slow day loses you '+money(-r.at.slow.profit)+(r.at.slow.topUp>0?' even after the guarantee.':'.'));
   if(has(p.normalDayRaw) && r.expSales>0){
     var diff = r.at.mid.profit - p.normalDay;
@@ -417,6 +419,7 @@ function fallbackCopy(text, okMsg){
 /* ---------- render ---------- */
 var LAST = null, STARTED = false;
 function renderOut(){
+  CUR = ['$','C$','A$','£','€'].indexOf(S.cur)>=0 ? S.cur : '$';
   var p = plan(), r = analyze(p); LAST = {p:p, r:r};
   var h = '';
   if(!r.verdict){ $('out').innerHTML = '<p class="hint">Fill in the normal-day orders and the average order above.</p>'; return; }
@@ -475,9 +478,9 @@ function renderLog(){
       var e = x.e, id = e.id;
       return '<div class="notice"><b>'+esc(e.name||'Untitled event')+'</b> '+(e.date?'· '+esc(e.date):'')+' · expected '+money(e.expSales)+' sales, '+money(e.expProfit)+' kept'
         + '<div class="grid" style="margin-top:8px">'
-        + '<div><label for="as_'+id+'">Real sales $</label><input type="number" inputmode="decimal" id="as_'+id+'"></div>'
+        + '<div><label for="as_'+id+'">Real sales</label><input type="number" inputmode="decimal" id="as_'+id+'"></div>'
         + '<div><label for="ah_'+id+'">Hours served</label><input type="number" inputmode="decimal" id="ah_'+id+'" value="'+esc(e.p.hrsOpen)+'"></div>'
-        + '<div><label for="ax_'+id+'">Surprise costs $</label><input type="number" inputmode="decimal" id="ax_'+id+'" placeholder="0"></div>'
+        + '<div><label for="ax_'+id+'">Surprise costs</label><input type="number" inputmode="decimal" id="ax_'+id+'" placeholder="0"></div>'
         + '<div><label for="aw_'+id+'">Weather</label><select id="aw_'+id+'"><option value="">—</option><option>Nice</option><option>Hot</option><option>Cold</option><option>Rain</option><option>Wind</option></select></div>'
         + '<div style="grid-column:span 2"><label for="an_'+id+'">Notes for next year</label><input type="text" id="an_'+id+'" placeholder="e.g. parked far from the gate, sold out at 7pm"></div>'
         + '</div><div class="toolbar"><button type="button" class="primary small" data-act="'+id+'">Save result</button><button type="button" class="small" data-open="'+id+'">Open in calculator</button><button type="button" class="small" data-del="'+id+'">Delete</button></div></div>';
@@ -545,7 +548,7 @@ function counterText(){
   t += 'We ran the numbers on '+(fee.join(' + ')||'the current terms')+(p.feeFlat>0&&p.feePct>0&&p.feeMode==='greater'?' (whichever is higher)':'')+' and at the turnout we expect it doesn’t quite work for a truck our size. ';
   var opts = [];
   // ask for what the trade guidance calls fair, never more than our own limit
-  var askFlat = r.maxFlatOnly!=null ? Math.min(r.maxFlatOnly, 300) : null;
+  var askFlat = r.maxFlatOnly!=null ? (CUR==='$' ? Math.min(r.maxFlatOnly, 300) : r.maxFlatOnly) : null;
   var askPct = r.maxPctOnly!=null ? Math.min(r.maxPctOnly, 10) : null;
   if(p.feeFlat>0 && askFlat!=null && askFlat>=p.feeFlat) askFlat = null;  // their flat fee is already fine
   if(askFlat!=null && askFlat>=25) opts.push('a flat fee of '+money(Math.floor(askFlat/5)*5)+' with no commission');
@@ -576,6 +579,7 @@ document.addEventListener('change', function(e){
   var t = e.target;
   if(t.name==='feeMode'){ S.feeMode = t.value; save(); renderOut(); }
   if(t.id==='evType'){ S.evType = t.value; save(); }
+  if(t.id==='cur'){ S.cur = t.value; save(); renderAll(); }
   if(t.id==='restoreIn' && t.files && t.files[0]){
     var fr = new FileReader();
     fr.onload = function(){ try{ var o = JSON.parse(fr.result); if(Array.isArray(o.log)){ setLog(o.log); renderAll(); note('Backup restored: '+o.log.length+' events.'); } else note('That file isn’t a Booking Check backup.'); }catch(err){ note('That file isn’t a Booking Check backup.'); } };
