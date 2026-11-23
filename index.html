@@ -84,13 +84,14 @@ th:first-child,td:first-child{text-align:left;white-space:normal;min-width:120px
 footer{color:var(--muted);font-size:14px;margin-top:30px}
 a{color:var(--accent)}
 .sr{position:absolute;left:-9999px}
-@media print{ .noprint{display:none!important} body{background:#fff;color:#000} section.step{border:none;padding:0} }
+.printonly{display:none}
+@media print{ .printonly{display:block;font-size:12px;color:#555;margin-top:12px} .noprint{display:none!important} body{background:#fff;color:#000} section.step{border:none;padding:0} }
 </style>
 </head>
 <body>
 <main>
 <header>
-  <h1>Is this event worth it?</h1>
+  <h1>Is this food truck event worth it?</h1>
   <p class="tag">A free calculator for food trucks, trailers and carts. Put in the booth fee, the commission and your costs. Get your break-even, what you keep on a slow, normal and busy day, and the most you should agree to pay. Nothing to install, nothing uploaded.</p>
 </header>
 
@@ -172,6 +173,7 @@ a{color:var(--accent)}
     <button type="button" id="btnReset">Start over</button>
   </div>
   <p class="hint noprint" id="actNote" aria-live="polite"></p>
+  <p class="printonly" id="madeWith">Worked out with Booking Check, a free food truck event calculator: aiyoto-myth.github.io/food-truck-event</p>
 </section>
 
 <section class="step noprint" aria-labelledby="h6s" id="logSec">
@@ -413,7 +415,7 @@ function fallbackCopy(text, okMsg){
 }
 
 /* ---------- render ---------- */
-var LAST = null;
+var LAST = null, STARTED = false;
 function renderOut(){
   var p = plan(), r = analyze(p); LAST = {p:p, r:r};
   var h = '';
@@ -520,7 +522,7 @@ function renderPro(){
   }
   $('proBody').innerHTML = h;
 }
-function renderAll(){ renderOut(); renderLog(); renderPro(); }
+function renderAll(){ renderOut(); renderLog(); renderPro(); $('madeWith').className = isPro() ? 'noprint' : 'printonly'; }
 
 /* ---------- actions ---------- */
 function saveToLog(){
@@ -530,7 +532,7 @@ function saveToLog(){
   var snap = {}; Object.keys(DEFAULTS).forEach(function(k){ snap[k] = S[k]; });
   log.push({id:'e'+Date.now().toString(36), name:S.evName, date:S.evDate, type:S.evType, s:snap, p:LAST.p, expSales:LAST.r.expSales, expProfit:LAST.r.at.mid.profit, verdict:LAST.r.verdict, actual:null, saved:new Date().toISOString().slice(0,10)});
   if(!setLog(log)){ note('Couldn’t save: this browser blocks storage (private mode?).'); return; }
-  track('log-save'); renderLog(); note('Saved. After the event, put in your real sales in "My event log".');
+  track('log-save'); renderLog(); note('Saved. After the event, put in your real sales in "My event log".' + (isPro() ? '' : ' (Free log: '+log.length+' of '+FREE_LOG+'. Pro keeps every event and learns from your real results.)'));
 }
 function counterText(){
   if(!LAST || !LAST.r.verdict) return '';
@@ -568,7 +570,7 @@ function download(name, text, type){
 
 document.addEventListener('input', function(e){
   var t = e.target;
-  if(t.id && FIELDS.indexOf(t.id)>=0){ S[t.id] = NUMS[t.id] ? t.value : t.value; save(); renderOut(); }
+  if(t.id && FIELDS.indexOf(t.id)>=0){ if(!STARTED){ STARTED = true; track('tool-start'); } S[t.id] = t.value; save(); renderOut(); }
 });
 document.addEventListener('change', function(e){
   var t = e.target;
@@ -586,7 +588,7 @@ document.addEventListener('click', function(e){
   var d = b.dataset;
   if(b.id==='btnSave') return saveToLog();
   if(b.id==='btnShare'){ track('share'); return copy(shareLink(), 'Link copied. Whoever opens it sees these numbers.'); }
-  if(b.id==='btnCounter'){ var t = counterText(); if(!t){ note('Fill in the numbers first.'); return; } track('counter'); return copy(t, 'Message copied. Paste it into your reply to the organizer.'); }
+  if(b.id==='btnCounter'){ var t = counterText(); if(!t){ note('Fill in the numbers first.'); return; } track('counter'); return copy(t, 'Message copied. Paste it into your reply to the organizer.' + (isPro() ? '' : ' After the event, log what you really sold; Pro uses your real results to sharpen every future estimate.')); }
   if(b.id==='btnPrint'){ track('print'); window.print(); return; }
   if(b.id==='btnReset'){ if(confirm('Clear the calculator? Your event log stays.')){ var keep = {}; ['foodPct','cardPct','staffN','wage','ticket','perHour','normalDay'].forEach(function(k){ keep[k]=S[k]; }); S = Object.assign({}, DEFAULTS, keep, {evName:'',evDate:''}); save(); toForm(); renderOut(); note('Cleared. Your own costs were kept.'); } return; }
   if(b.id==='btnHelper'){
@@ -639,6 +641,7 @@ if(shared){
 }
 affCode();
 toForm(); renderAll();
+try{ var seenPro = false; new IntersectionObserver(function(es){ es.forEach(function(x){ if(x.isIntersecting && !seenPro && !isPro()){ seenPro = true; track('pro-view'); } }); }).observe($('proSec')); }catch(e){}
 if(GC_CODE){ var gs = document.createElement('script'); gs.async = true; gs.src = '//gc.zgo.at/count.js'; gs.setAttribute('data-goatcounter', 'https://'+GC_CODE+'.goatcounter.com/count'); document.head.appendChild(gs); }
 
 /* expose the pure model for tests */
