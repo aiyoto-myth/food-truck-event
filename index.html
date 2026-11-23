@@ -307,6 +307,8 @@ var WHOP_PAGE = 'https://whop.com/booking-check-pro/';
 var VERIFY = 'https://app-bizz-api.whop.site/api/verify';
 var PRICE = '$3';
 var FREE_LOG = 3;
+// SHA-256 of gift codes we hand out (codes themselves are not in this file)
+var GIFT = ['1364edf18066c82a0e9ab8758c9650e6e60bd3c5b902f0a1ac0f6b4c84aebbd9','e1b74407fe9b1ef209043f0ec5a2abb143249695e84d5c77e3ad5fb339b86a23','1e8e0ff2f48d56ecc686ed2fb82f66394d4b85c6f146b5afc4b5c13d96e6ef3d','f91ee66fc0bc7ec7d974b2002b1b9f85778c119ab6d0e30e10dba0b16ee10219','ab48cfb5c57cfe42205747fa22e34eeb1b828936eaf62230a2008967e233bf89','bdaa2ec44f94f04a10ffda1be350a7d2c39efc2363f182399a94ff786f3583ed','b71da2b7b8d93723d7814fc99d687980fa6db3253f44df3e6d93bf1432b2737f','bb446c7d3ca23ffb5cb315ee0dd4dc5ff837aedef7978e589284491a14b1d539','24b7ab1e4ae00d9ed5ece181d35ea30698353cb6880957f343ee4c153ef31226','6e31bba050ede2f28cc86772ece43880c815f9007e8eea1e05e28fb5179eceb1','6a3c974b7dec4fa0e0ab534387c79db77f569fa2b978e7c178d747705ff97c68','45bcc48eb0dcb37994c6e06f35a0e38c2e437dbc504cea636ce3023711651c7c','de80ee8d0cf12ff754ff6f23db27e61e280c78c5dc3bc80541a4d6a0fc98c9ad','92e4cce812a2e2cc0909f9887a1590fe0b933d843ff72ae80d1b5293a4678e83'];
 var GC_CODE = '';
 var KEY = 'bc.plan.v2', MINE = 'bc.plan.mine', LOGKEY = 'bc.log.v1', PROKEY = 'bc.pro';
 
@@ -482,8 +484,9 @@ function toForm(){
 }
 
 /* ---------- Pro (Whop; unlock with the purchase email) ---------- */
-var PRO = lsGet(PROKEY, null); if(!PRO || typeof PRO!=='object' || typeof PRO.email!=='string') PRO = {email:''};
-function isPro(){ return !!PRO.email; }
+var PRO = lsGet(PROKEY, null); if(!PRO || typeof PRO!=='object') PRO = {email:''};
+function isPro(){ return !!(PRO.email || PRO.gift); }
+function sha256hex(str){ return crypto.subtle.digest('SHA-256', new TextEncoder().encode(str)).then(function(b){ return Array.prototype.map.call(new Uint8Array(b), function(x){ return ('0'+x.toString(16)).slice(-2); }).join(''); }); }
 function affCode(){
   var a = '';
   try{ a = new URLSearchParams(location.search).get('a') || ''; }catch(e){}
@@ -640,11 +643,11 @@ function renderPro(){
       + '<div><div class="price">'+PRICE+'</div><p style="margin:4px 0 12px">once. No subscription. Paid through Whop.</p>'
       + '<p><a class="btn primary" href="'+esc(buyUrl())+'" target="_blank" rel="noopener" data-buy="1">Get Pro for '+PRICE+'</a></p>'
       + (bought ? '<p><b>Thanks for buying!</b> Enter the email you paid with to unlock.</p>' : '')
-      + '<label for="proEmail" style="margin-top:14px">Already bought? Enter the email you paid with</label>'
-      + '<div class="row"><input type="email" id="proEmail" autocomplete="email" style="flex:1 1 200px"><button type="button" id="btnUnlock">Unlock</button></div>'
+      + '<label for="proEmail" style="margin-top:14px">Already bought? Enter the email you paid with, or a gift code</label>'
+      + '<div class="row"><input type="text" id="proEmail" autocomplete="email" autocapitalize="off" spellcheck="false" style="flex:1 1 200px"><button type="button" id="btnUnlock">Unlock</button></div>'
       + '<p id="proNote" aria-live="polite" style="margin:8px 0 0"></p></div>';
   } else {
-    h = '<div><h2>Pro is unlocked</h2><p>On this device, for '+esc(PRO.email)+'. Thank you.</p></div>'
+    h = '<div><h2>Pro is unlocked</h2><p>On this device'+(PRO.email?', for '+esc(PRO.email):' with a gift code')+'. Thank you.</p></div>'
       + '<div><p><b>Know other truck owners?</b> Recommend Booking Check and earn 50% of each sale through Whop’s affiliate program: <a href="'+WHOP_PAGE+'" target="_blank" rel="noopener">get your link on Whop</a>.</p></div>';
   }
   $('proBody').innerHTML = h;
@@ -721,7 +724,16 @@ document.addEventListener('click', function(e){
   }
   if(b.id==='btnUnlock'){
     var em = ($('proEmail').value||'').trim().toLowerCase();
-    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){ $('proEmail').focus(); $('proNote').textContent = 'Enter the email you used on Whop.'; return; }
+    if(em && em.indexOf('@')<0){
+      var code = em.toUpperCase().replace(/\s+/g,'');
+      $('proNote').textContent = 'Checking…';
+      sha256hex(code).then(function(hx){
+        if(GIFT.indexOf(hx)>=0){ PRO = {email:'', gift:hx.slice(0,12)}; lsSet(PROKEY, PRO); track('pro-gift'); renderAll(); say('Pro unlocked'); }
+        else $('proNote').textContent = 'That code didn\u2019t work. Check it against your email, letter for letter.';
+      }, function(){ $('proNote').textContent = 'This browser can\u2019t check codes. Try another browser.'; });
+      return;
+    }
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){ $('proEmail').focus(); $('proNote').textContent = 'Enter the email you used on Whop, or your gift code.'; return; }
     $('proNote').textContent = 'Checking…';
     verifyEmail(em).then(function(j){
       if(j && j.ok && j.valid){ PRO = {email:em}; lsSet(PROKEY, PRO); track('pro-unlocked'); renderAll(); say('Pro unlocked'); }
