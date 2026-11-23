@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Food Truck Event Calculator: Is This Event Worth It? (Free) | Booking Check</title>
+<meta name="description" content="Free food truck event calculator. Enter the booth fee, commission and your costs; get the break-even, profit on a slow, normal and busy day, and a go / negotiate / pass answer. Log how each event went. No sign-up.">
+<link rel="canonical" href="https://aiyoto-myth.github.io/food-truck-event/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Food Truck Event Calculator: Is This Event Worth It?">
+<meta property="og:description" content="Booth fee + commission + your costs → break-even, slow/normal/busy profit, and the most you should agree to pay. Free, works on your phone.">
+<meta property="og:url" content="https://aiyoto-myth.github.io/food-truck-event/">
+<meta name="twitter:card" content="summary">
+<style>
+:root{
+  --bg:#f7f6f2; --card:#ffffff; --ink:#1c1b18; --muted:#5c5850; --line:#dcd7cc;
+  --accent:#b4441c; --accent-ink:#ffffff; --soft:#f0ece3;
+  --go:#1d6b3f; --go-bg:#e3f3e8; --mid:#8a5a00; --mid-bg:#fbf0d4; --no:#a02222; --no-bg:#fbe3e1;
+  --focus:#2457c5;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#161513; --card:#201f1c; --ink:#eeeae2; --muted:#b0aa9f; --line:#3a3731; --accent:#f08a5d; --accent-ink:#1b0e08; --soft:#2a2723;
+    --go:#7fd6a1; --go-bg:#173323; --mid:#f2c766; --mid-bg:#3a2f12; --no:#ff9b93; --no-bg:#3d1b19; --focus:#8fb0ff;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#161513; --card:#201f1c; --ink:#eeeae2; --muted:#b0aa9f; --line:#3a3731; --accent:#f08a5d; --accent-ink:#1b0e08; --soft:#2a2723;
+  --go:#7fd6a1; --go-bg:#173323; --mid:#f2c766; --mid-bg:#3a2f12; --no:#ff9b93; --no-bg:#3d1b19; --focus:#8fb0ff;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:900px;margin:0 auto;padding:18px 16px 80px}
+h1{font-size:27px;line-height:1.2;margin:6px 0 4px}
+.tag{color:var(--muted);margin:0 0 14px;font-size:17px}
+h2{font-size:21px;margin:0 0 6px}
+h3{font-size:17px;margin:14px 0 6px}
+.hint{color:var(--muted);font-size:15px;margin:0 0 10px}
+section.step{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
+label{display:block;font-weight:600;font-size:15px;margin:0 0 4px}
+.sub{font-weight:400;color:var(--muted);font-size:13px}
+input[type=text],input[type=number],input[type=date],select,textarea{font:inherit;font-size:17px;width:100%;min-height:44px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+textarea{min-height:70px}
+button,.btn{font:inherit;font-size:16px;min-height:44px;padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:var(--soft);color:var(--ink);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+button.primary,.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+button.small{min-height:36px;padding:4px 10px;font-size:15px}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:end}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:700px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:420px){.grid2{grid-template-columns:1fr}}
+.grid>*,.grid2>*{min-width:0}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg label{font-weight:400;display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:8px;padding:6px 10px;min-height:44px;margin:0;background:var(--bg)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+details{margin-top:10px}
+summary{cursor:pointer;font-weight:600;min-height:36px;display:flex;align-items:center}
+.verdict{border-radius:12px;padding:14px 16px;margin:0 0 12px;border:2px solid}
+.verdict.go{background:var(--go-bg);border-color:var(--go);color:var(--ink)}
+.verdict.mid{background:var(--mid-bg);border-color:var(--mid)}
+.verdict.no{background:var(--no-bg);border-color:var(--no)}
+.verdict .big{font-size:26px;font-weight:800;margin:0}
+.verdict.go .big{color:var(--go)} .verdict.mid .big{color:var(--mid)} .verdict.no .big{color:var(--no)}
+.scen{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:10px 0}
+@media (max-width:360px){.scen b{font-size:18px}}
+.scen div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 4px;text-align:center;min-width:0}
+.scen b{display:block;font-size:22px}
+.scen small{color:var(--muted);display:block;font-size:13px}
+.neg{color:var(--no)} .pos{color:var(--go)}
+ul.rules{list-style:none;padding:0;margin:8px 0}
+ul.rules li{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--line)}
+.dot{flex:0 0 auto;width:14px;height:14px;border-radius:50%;margin-top:5px}
+.dot.go{background:var(--go)} .dot.mid{background:var(--mid)} .dot.no{background:var(--no)}
+.kv{display:grid;grid-template-columns:1fr auto;gap:2px 12px;font-size:15px}
+.kv span:nth-child(even){text-align:right;font-variant-numeric:tabular-nums}
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:15px;font-variant-numeric:tabular-nums}
+th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left;white-space:normal;min-width:120px}
+.notice{background:var(--soft);border-radius:10px;padding:10px 12px;margin:10px 0;font-size:15px}
+.pill{display:inline-block;font-size:12px;font-weight:700;border-radius:99px;padding:1px 8px;background:var(--accent);color:var(--accent-ink);vertical-align:2px}
+footer{color:var(--muted);font-size:14px;margin-top:30px}
+a{color:var(--accent)}
+.sr{position:absolute;left:-9999px}
+@media print{ .noprint{display:none!important} body{background:#fff;color:#000} section.step{border:none;padding:0} }
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>Is this event worth it?</h1>
+  <p class="tag">A free calculator for food trucks, trailers and carts. Put in the booth fee, the commission and your costs. Get your break-even, what you keep on a slow, normal and busy day, and the most you should agree to pay. Nothing to install, nothing uploaded.</p>
+</header>
+
+<div class="notice" id="sharedNote" hidden></div>
+
+<section class="step noprint" aria-labelledby="h1s">
+  <h2 id="h1s">1. The event</h2>
+  <div class="grid">
+    <div style="grid-column:span 2"><label for="evName">Event name</label><input type="text" id="evName" placeholder="e.g. Riverside Summer Fest" autocomplete="off"></div>
+    <div><label for="evDate">Date</label><input type="date" id="evDate"></div>
+    <div><label for="evType">Kind of event</label><select id="evType">
+      <option value="festival">Festival / fair</option><option value="market">Farmers / night market</option><option value="brewery">Brewery / winery</option>
+      <option value="community">Community / school / church</option><option value="corporate">Office / corporate lunch</option><option value="private">Private party / catering</option>
+      <option value="sports">Sports / concert</option><option value="street">Regular street spot</option><option value="other">Other</option></select></div>
+    <div><label for="hrsOpen">Hours serving</label><input type="number" id="hrsOpen" inputmode="decimal" min="0" step="0.5"></div>
+    <div><label for="hrsExtra">Hours for travel, setup, teardown</label><input type="number" id="hrsExtra" inputmode="decimal" min="0" step="0.5"></div>
+  </div>
+</section>
+
+<section class="step noprint" aria-labelledby="h2s">
+  <h2 id="h2s">2. What the organizer charges</h2>
+  <div class="grid">
+    <div><label for="feeFlat">Flat fee $ <span class="sub">booth / pitch / application</span></label><input type="number" id="feeFlat" inputmode="decimal" min="0" step="1"></div>
+    <div><label for="feePct">Commission % of sales</label><input type="number" id="feePct" inputmode="decimal" min="0" max="100" step="0.5"></div>
+    <div><label for="guarantee">Sales guarantee $ <span class="sub">if they top you up</span></label><input type="number" id="guarantee" inputmode="decimal" min="0" step="1" placeholder="none"></div>
+  </div>
+  <div style="margin-top:10px"><span style="font-weight:600;font-size:15px">If there is both a flat fee and a commission, you pay</span>
+    <div class="seg" role="radiogroup" aria-label="How the fee works">
+      <label><input type="radio" name="feeMode" value="both" checked> both</label>
+      <label><input type="radio" name="feeMode" value="greater"> whichever is higher</label>
+    </div>
+  </div>
+</section>
+
+<section class="step noprint" aria-labelledby="h3s">
+  <h2 id="h3s">3. How busy will it be?</h2>
+  <p class="hint">Orders you expect to sell. Not sure? Use the helper below.</p>
+  <div class="grid">
+    <div><label for="oSlow">Slow day orders</label><input type="number" id="oSlow" inputmode="numeric" min="0" step="1"></div>
+    <div><label for="oMid">Normal day orders</label><input type="number" id="oMid" inputmode="numeric" min="0" step="1"></div>
+    <div><label for="oBusy">Busy day orders</label><input type="number" id="oBusy" inputmode="numeric" min="0" step="1"></div>
+    <div><label for="ticket">Average order $</label><input type="number" id="ticket" inputmode="decimal" min="0" step="0.25"></div>
+    <div><label for="perHour">Most orders you can serve per hour <span class="sub">optional</span></label><input type="number" id="perHour" inputmode="numeric" min="0" step="1" placeholder="no limit"></div>
+  </div>
+  <details id="helper">
+    <summary>Estimate orders from attendance</summary>
+    <div class="grid" style="margin-top:8px">
+      <div><label for="att">Expected attendance</label><input type="number" id="att" inputmode="numeric" min="0" step="10"></div>
+      <div><label for="vendors">Food vendors at the event</label><input type="number" id="vendors" inputmode="numeric" min="1" step="1"></div>
+      <div><label for="buyPct">% of people who buy food</label><input type="number" id="buyPct" inputmode="decimal" min="0" max="100" step="1" value="40"></div>
+    </div>
+    <p class="hint" style="margin-top:8px">Normal = attendance × % who buy food ÷ food vendors. Slow = 60% of that, busy = 140%. Organizers often overstate attendance; ask for last year's real numbers.</p>
+    <button type="button" id="btnHelper">Fill in the orders</button>
+  </details>
+</section>
+
+<section class="step noprint" aria-labelledby="h4s">
+  <h2 id="h4s">4. Your costs</h2>
+  <div class="grid">
+    <div><label for="foodPct">Food + packaging, % of sales</label><input type="number" id="foodPct" inputmode="decimal" min="0" max="100" step="0.5"></div>
+    <div><label for="cardPct">Card fees, % of sales</label><input type="number" id="cardPct" inputmode="decimal" min="0" max="20" step="0.1"></div>
+    <div><label for="staffN">Paid staff (not you)</label><input type="number" id="staffN" inputmode="numeric" min="0" step="1"></div>
+    <div><label for="wage">Their pay per hour $</label><input type="number" id="wage" inputmode="decimal" min="0" step="0.5"></div>
+    <div><label for="fuel">Fuel, propane, generator $</label><input type="number" id="fuel" inputmode="decimal" min="0" step="1"></div>
+    <div><label for="permit">Permits, insurance add-ons $</label><input type="number" id="permit" inputmode="decimal" min="0" step="1"></div>
+    <div><label for="other">Other costs $ <span class="sub">ice, parking, hotel, waste</span></label><input type="number" id="other" inputmode="decimal" min="0" step="1"></div>
+    <div><label for="normalDay">What you'd net on a normal day instead $ <span class="sub">optional</span></label><input type="number" id="normalDay" inputmode="decimal" step="1" placeholder="skip"></div>
+  </div>
+</section>
+
+<section class="step" aria-labelledby="h5s" id="result">
+  <h2 id="h5s">The answer</h2>
+  <div id="out" aria-live="polite"></div>
+  <div class="toolbar noprint">
+    <button type="button" class="primary" id="btnSave">Save to my event log</button>
+    <button type="button" id="btnShare">Copy a link to this</button>
+    <button type="button" id="btnCounter">Copy a counter-offer message</button>
+    <button type="button" id="btnPrint">Print</button>
+    <button type="button" id="btnReset">Start over</button>
+  </div>
+  <p class="hint noprint" id="actNote" aria-live="polite"></p>
+</section>
+
+<section class="step noprint" aria-labelledby="h6s" id="logSec">
+  <h2 id="h6s">My event log</h2>
+  <p class="hint">Save events before you go. Afterwards, put in what you really sold. Over a season this shows which events actually pay, per hour of your day, and how far off your guesses were.</p>
+  <div id="logBody"></div>
+</section>
+
+<section class="step noprint" aria-labelledby="h7s" id="proSec">
+  <h2 id="h7s">Pro <span class="pill" id="proPrice"></span></h2>
+  <div id="proBody"></div>
+</section>
+
+<section class="step" aria-labelledby="h8s">
+  <h2 id="h8s">How the lights work</h2>
+  <ul class="rules" style="margin-top:0">
+    <li><span class="dot go"></span><div><b>Break-even under 60% of a normal day: go. Over 80%: say no.</b> From KitchenNmbrs' guide <a href="https://kitchennmbrs.app/en/knowledge-base/anyone-who-sells-food/how-do-i-know-if-an-event-or-festival-is-worth-it-financially" target="_blank" rel="noopener">"How do I know if an event or festival is worth it financially"</a>. The room between 60% and 80% is for a bad turnout, rain, or a line that moves slower than you hoped.</div></li>
+    <li><span class="dot go"></span><div><b>Sales should be at least 4× what you pay the organizer.</b> The UK caterers' association NCASS calls this <a href="https://www.ncass.org.uk/news/the-times-four-rule-a-smart-approach-to-festival-pitch-fees/" target="_blank" rel="noopener">the "Times Four" rule</a>.</div></li>
+    <li><span class="dot mid"></span><div><b>Commission: 10% or less is fair; never over 15%; over 10% should come with a sales guarantee; a flat fee should stay under $300 a day.</b> From the <a href="https://wafoodtrucks.squarespace.com/event-information" target="_blank" rel="noopener">Washington State Food Truck Association's event guidance</a>.</div></li>
+    <li><span class="dot no"></span><div><b>A slow day should not cost you money</b>, and the event should beat a normal day at your usual spot if you gave a number for that.</div></li>
+  </ul>
+  <p class="hint">These are rules of thumb from the trade, not advice. You know your truck; the numbers just make the guess honest.</p>
+</section>
+
+<section class="step" aria-labelledby="h9s">
+  <h2 id="h9s">Questions</h2>
+  <h3>Is it really free?</h3>
+  <p>Yes. The calculator, the counter-offer message and a log of your first 3 events are free. Nothing is uploaded and there's no account: everything stays in this browser. Pro is a one-time payment for trucks that do a lot of events and want the full season log.</p>
+  <h3>Which number should I use for food cost?</h3>
+  <p>Your food and packaging cost as a share of what you charge. If a $12 plate costs you $3.60 in food and boxes, that's 30%. Event menus are often smaller and pricier; use the event menu.</p>
+  <h3>What's "whichever is higher"?</h3>
+  <p>Some events charge, say, "$150 or 15% of sales, whichever is higher". Pick that option and the calculator charges you the bigger of the two at each sales level.</p>
+  <h3>What's a sales guarantee?</h3>
+  <p>Some organizers promise a minimum: if you sell less than, say, $1,500, they pay you the difference. The calculator counts that top-up.</p>
+</section>
+
+<footer>
+  <p>Booking Check · made by a small independent team. Questions or ideas: <a href="mailto:sam@samsbench.com?subject=Booking%20Check">sam@samsbench.com</a>. Food truck YouTuber or coach? <a href="mailto:sam@samsbench.com?subject=Booking%20Check%20affiliate">Get a link that pays you 50% of every Pro sale</a>.</p>
+</footer>
+<div class="sr" id="live" aria-live="polite"></div>
+</main>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- config ---------- */
+var SITE = 'https://aiyoto-myth.github.io/food-truck-event/';
+var GUMROAD_URL = '';         // product page, filled in once the product exists
+var GUMROAD_PRODUCT_ID = '';  // for license checks
+var PRICE = '$19';
+var FREE_LOG = 3;
+var GC_CODE = '';             // GoatCounter code; empty = no tracking
+var KEY = 'bc.plan.v1', LOGKEY = 'bc.log.v1', PROKEY = 'bc.pro';
+
+var FIELDS = ['evName','evDate','evType','hrsOpen','hrsExtra','feeFlat','feePct','guarantee','oSlow','oMid','oBusy','ticket','perHour','foodPct','cardPct','staffN','wage','fuel','permit','other','normalDay','att','vendors','buyPct'];
+var NUMS = {hrsOpen:1,hrsExtra:1,feeFlat:1,feePct:1,guarantee:1,oSlow:1,oMid:1,oBusy:1,ticket:1,perHour:1,foodPct:1,cardPct:1,staffN:1,wage:1,fuel:1,permit:1,other:1,normalDay:1,att:1,vendors:1,buyPct:1};
+var DEFAULTS = {evName:'',evDate:'',evType:'festival',hrsOpen:6,hrsExtra:3,feeFlat:150,feePct:10,guarantee:'',feeMode:'both',oSlow:90,oMid:150,oBusy:210,ticket:14,perHour:'',foodPct:30,cardPct:3,staffN:1,wage:18,fuel:60,permit:0,other:20,normalDay:'',att:'',vendors:'',buyPct:40};
+var TYPE_NAME = {festival:'Festival / fair',market:'Market',brewery:'Brewery / winery',community:'Community',corporate:'Corporate',private:'Private / catering',sports:'Sports / concert',street:'Street spot',other:'Other'};
+
+/* ---------- helpers ---------- */
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+function num(v){ var n = parseFloat(v); return isFinite(n) ? n : 0; }
+function has(v){ return v!=='' && v!=null && isFinite(parseFloat(v)); }
+function money(n){ var s = Math.round(Math.abs(n)).toLocaleString('en-US'); return (n<-0.5?'−$':'$') + s; }
+function pct(n){ return (Math.round(n*10)/10) + '%'; }
+function say(t){ $('live').textContent=''; setTimeout(function(){ $('live').textContent=t; },30); }
+function note(t){ $('actNote').textContent = t; say(t); }
+function track(name){ try{ if(window.goatcounter && window.goatcounter.count) window.goatcounter.count({path:name,title:name,event:true}); }catch(e){} }
+function lsGet(k, d){ try{ var t = localStorage.getItem(k); return t ? JSON.parse(t) : d; }catch(e){ return d; } }
+function lsSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ return false; } }
+
+/* ---------- the model (pure; tested) ---------- */
+// p: plain numbers. Returns profit and parts at a given sales level (before tax).
+function costsAt(p, sales){
+  var flat = p.feeFlat, comm = sales * p.feePct/100;
+  var fee = p.feeMode==='greater' ? Math.max(flat, comm) : flat + comm;
+  var topUp = (p.guarantee>0 && sales < p.guarantee) ? (p.guarantee - sales) : 0;
+  var food = sales * p.foodPct/100;
+  var card = sales * p.cardPct/100;
+  var staff = p.staffN * p.wage * (p.hrsOpen + p.hrsExtra);
+  var fixedOther = p.fuel + p.permit + p.other;
+  var profit = sales + topUp - fee - food - card - staff - fixedOther;
+  return {sales:sales, topUp:topUp, fee:fee, food:food, card:card, staff:staff, fixed:fixedOther, profit:profit};
+}
+function profitAt(p, s){ return costsAt(p, s).profit; }
+// Sales needed to break even, ignoring any guarantee top-up (you want to earn it, not be rescued).
+// null = never breaks even (fees + food eat every extra dollar).
+function breakEven(p){
+  var q = Object.assign({}, p, {guarantee:0});
+  if(profitAt(q, 0) >= 0) return 0;
+  var hi = 1000;
+  while(profitAt(q, hi) < 0){ hi *= 2; if(hi > 1e9) return null; }
+  var lo = 0;
+  for(var i=0;i<80;i++){ var m=(lo+hi)/2; if(profitAt(q,m) >= 0) hi=m; else lo=m; }
+  return hi;
+}
+function capOrders(p, n){ return p.perHour > 0 ? Math.min(n, p.perHour * p.hrsOpen) : n; }
+// Largest value of field f (searching 0..maxV) for which profit at sales S is still >= 0.
+function maxFor(p, f, S, maxV){
+  var q = Object.assign({}, p, {guarantee:0});
+  var test = function(v){ var r = Object.assign({}, q); r[f] = v; return profitAt(r, S) >= 0; };
+  if(!test(0)) return null;
+  if(test(maxV)) return maxV;
+  var lo = 0, hi = maxV;
+  for(var i=0;i<60;i++){ var m=(lo+hi)/2; if(test(m)) lo=m; else hi=m; }
+  return lo;
+}
+function analyze(p){
+  var r = {};
+  r.ownerHours = p.hrsOpen + p.hrsExtra;
+  r.cap = p.perHour > 0 ? p.perHour * p.hrsOpen : null;
+  r.orders = {slow:capOrders(p,p.oSlow), mid:capOrders(p,p.oMid), busy:capOrders(p,p.oBusy)};
+  r.capped = r.cap!=null && (p.oSlow>r.cap || p.oMid>r.cap || p.oBusy>r.cap);
+  r.at = {};
+  ['slow','mid','busy'].forEach(function(k){ r.at[k] = costsAt(p, r.orders[k] * p.ticket); });
+  r.expSales = r.at.mid.sales;
+  r.be = breakEven(p);
+  r.beOrders = (r.be!=null && p.ticket>0) ? Math.ceil(r.be / p.ticket - 1e-9) : null;
+  r.beShare = (r.be!=null && r.expSales>0) ? r.be / r.expSales : null;
+  r.feeTotal = r.at.mid.fee;
+  r.times = r.feeTotal>0 ? r.expSales / r.feeTotal : null;
+  r.perHour = r.ownerHours>0 ? r.at.mid.profit / r.ownerHours : null;
+  // negotiation: what fee keeps break-even at 60% of a normal day
+  var S60 = 0.6 * r.expSales;
+  r.maxFlat = S60>0 ? maxFor(p, 'feeFlat', S60, 1e6) : null;
+  r.maxPct = S60>0 ? maxFor(p, 'feePct', S60, 100) : null;
+  r.maxFlatOnly = S60>0 ? maxFor(Object.assign({}, p, {feePct:0, feeMode:'both'}), 'feeFlat', S60, 1e6) : null;
+  r.maxPctOnly = S60>0 ? maxFor(Object.assign({}, p, {feeFlat:0, feeMode:'both'}), 'feePct', S60, 100) : null;
+
+  var rules = [];
+  function rule(level, text){ rules.push({level:level, text:text}); }
+  if(r.expSales <= 0) rule('no', 'Put in your normal-day orders and average order to see the answer.');
+  else if(r.be==null) rule('no', 'You can never break even: the commission, food and card fees add up to '+pct(p.feePct+p.foodPct+p.cardPct)+' of every sale.');
+  else {
+    var s = r.beShare;
+    rule(s<=0.6?'go':(s<=0.8?'mid':'no'), 'Break-even is '+money(r.be)+' in sales ('+(r.beOrders!=null?r.beOrders+' orders, ':'')+Math.round(s*100)+'% of a normal day). '+(s<=0.6?'Under 60%: comfortable.':(s<=0.8?'Between 60% and 80%: thin. One bad hour and it’s gone.':'Over 80%: you need nearly everything to go right.')));
+  }
+  if(r.times!=null && r.expSales>0) rule(r.times>=4?'go':(r.times>=3?'mid':'no'), 'On a normal day you’d pay the organizer '+money(r.feeTotal)+', and sales would be '+(Math.round(r.times*10)/10)+'× that. '+(r.times>=4?'Passes the 4× rule.':'The 4× rule wants at least '+money(4*r.feeTotal)+' in sales.'));
+  if(p.feePct>0){
+    var lvl = p.feePct<=10 ? 'go' : (p.feePct<=15 && p.guarantee>0 ? 'mid' : 'no');
+    rule(lvl, 'Commission '+pct(p.feePct)+'. '+(p.feePct<=10?'Fair by the usual guidance.':(p.feePct<=15?(p.guarantee>0?'High, but they offer a sales guarantee.':'Over 10% with no sales guarantee: ask for one or a lower rate.'):'Over 15%: above what the trade guidance says is ever reasonable.')));
+  }
+  if(p.feeFlat>300) rule('mid', 'Flat fee '+money(p.feeFlat)+' is over the $300/day the guidance suggests as a ceiling.');
+  if(r.expSales>0) rule(r.at.slow.profit>=0?'go':'no', r.at.slow.profit>=0 ? 'A slow day still leaves you '+money(r.at.slow.profit)+'.' : 'A slow day loses you '+money(-r.at.slow.profit)+(r.at.slow.topUp>0?' even after the guarantee.':'.'));
+  if(has(p.normalDayRaw) && r.expSales>0){
+    var diff = r.at.mid.profit - p.normalDay;
+    rule(diff>=0?'go':'no', diff>=0 ? 'Beats a normal day at your usual spot by '+money(diff)+'.' : 'Makes '+money(-diff)+' less than a normal day at your usual spot.');
+  }
+  if(r.capped) rule('mid', 'Your line can serve about '+Math.round(r.cap)+' orders in '+p.hrsOpen+' hours, so the busier days are capped at that.');
+  r.rules = rules;
+  var reds = rules.filter(function(x){ return x.level==='no'; }).length, ambers = rules.filter(function(x){ return x.level==='mid'; }).length;
+  if(r.expSales<=0) r.verdict = null;
+  else if(r.be==null || r.at.mid.profit<=0 || (r.beShare!=null && r.beShare>0.8)) r.verdict = 'no';
+  else if(reds===0 && ambers===0) r.verdict = 'go';
+  else r.verdict = 'mid';
+  return r;
+}
+
+/* ---------- state ---------- */
+var S = Object.assign({}, DEFAULTS);
+function plan(){ // numbers for the model
+  var p = {feeMode:S.feeMode};
+  FIELDS.forEach(function(f){ if(NUMS[f]) p[f] = num(S[f]); });
+  p.normalDayRaw = S.normalDay;
+  return p;
+}
+function save(){ lsSet(KEY, S); }
+function load(){ var o = lsGet(KEY, null); if(o && typeof o==='object') S = Object.assign({}, DEFAULTS, o); }
+function toForm(){
+  FIELDS.forEach(function(f){ var el = $(f); if(el) el.value = S[f]==null ? '' : S[f]; });
+  document.querySelectorAll('input[name=feeMode]').forEach(function(r){ r.checked = (r.value===S.feeMode); });
+}
+
+/* ---------- Pro (Gumroad license) ---------- */
+var PRO = lsGet(PROKEY, {key:''}) || {key:''};
+function isPro(){ return !!PRO.key; }
+function affCode(){
+  var a = '';
+  try{ a = new URLSearchParams(location.search).get('a') || ''; }catch(e){}
+  a = a.replace(/[^A-Za-z0-9_-]/g,'').slice(0,40);
+  try{ if(a) localStorage.setItem('bc.aff', a); else a = localStorage.getItem('bc.aff') || ''; }catch(e){}
+  return a;
+}
+function buyUrl(){ if(!GUMROAD_URL) return ''; var a = affCode(); return a ? GUMROAD_URL + (GUMROAD_URL.indexOf('?')>=0?'&':'?') + 'affiliate_id=' + encodeURIComponent(a) : GUMROAD_URL; }
+function verifyLicense(key){
+  var body = new URLSearchParams({product_id: GUMROAD_PRODUCT_ID, license_key: key, increment_uses_count: 'false'});
+  return fetch('https://api.gumroad.com/v2/licenses/verify', {method:'POST', body: body}).then(function(r){ return r.json(); }).then(function(j){
+    return !!(j && j.success && j.purchase && !j.purchase.refunded && !j.purchase.disputed && !j.purchase.chargebacked);
+  });
+}
+
+/* ---------- event log ---------- */
+function getLog(){ var l = lsGet(LOGKEY, []); return Array.isArray(l) ? l : []; }
+function setLog(l){ return lsSet(LOGKEY, l); }
+function actualOf(e){ // profit with what really happened
+  if(!e.actual || !has(e.actual.sales)) return null;
+  var p = Object.assign({}, e.p);
+  if(has(e.actual.hours)) p.hrsOpen = num(e.actual.hours);
+  var c = costsAt(p, num(e.actual.sales));
+  var net = c.profit - num(e.actual.extra);
+  var hrs = p.hrsOpen + p.hrsExtra;
+  return {sales:num(e.actual.sales), net:net, perHour: hrs>0 ? net/hrs : null, vsPlan: e.expSales>0 ? num(e.actual.sales)/e.expSales : null};
+}
+function realityFactor(log){
+  var xs = log.map(actualOf).filter(function(a){ return a && a.vsPlan!=null; });
+  if(xs.length < 2) return null;
+  var sum = 0; xs.forEach(function(a){ sum += a.vsPlan; });
+  return {f: sum/xs.length, n: xs.length};
+}
+
+/* ---------- share link ---------- */
+function b64u(bytes){ var s=''; for(var i=0;i<bytes.length;i++) s+=String.fromCharCode(bytes[i]); return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
+function unb64u(str){ str = str.replace(/-/g,'+').replace(/_/g,'/'); while(str.length%4) str+='='; var s = atob(str), b = new Uint8Array(s.length); for(var i=0;i<s.length;i++) b[i]=s.charCodeAt(i); return b; }
+function shareLink(){
+  var o = {}; Object.keys(DEFAULTS).forEach(function(k){ if(S[k]!==DEFAULTS[k] || k==='evName') o[k] = S[k]; });
+  var aff = affCode();
+  return SITE + (aff ? '?a=' + encodeURIComponent(aff) : '') + '#p=' + b64u(new TextEncoder().encode(JSON.stringify(o)));
+}
+function readHash(){
+  try{
+    var h = location.hash;
+    if(h.indexOf('#p=')===0){ var o = JSON.parse(new TextDecoder().decode(unb64u(h.slice(3)))); if(o && typeof o==='object') return o; }
+  }catch(e){}
+  return null;
+}
+function copy(text, okMsg){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    return navigator.clipboard.writeText(text).then(function(){ note(okMsg); }, function(){ fallbackCopy(text, okMsg); });
+  }
+  fallbackCopy(text, okMsg);
+}
+function fallbackCopy(text, okMsg){
+  var ta = document.createElement('textarea'); ta.value = text; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
+  var ok = false; try{ ok = document.execCommand('copy'); }catch(e){}
+  document.body.removeChild(ta);
+  if(ok) note(okMsg); else { window.prompt('Copy this:', text); }
+}
+
+/* ---------- render ---------- */
+var LAST = null;
+function renderOut(){
+  var p = plan(), r = analyze(p); LAST = {p:p, r:r};
+  var h = '';
+  if(!r.verdict){ $('out').innerHTML = '<p class="hint">Fill in the normal-day orders and the average order above.</p>'; return; }
+  var V = {go:['Go','The numbers work.'], mid:['Negotiate','It can work, but the terms or the guesses are tight.'], no:['Pass, or change the terms','At these terms the event is more likely to cost you than pay you.']}[r.verdict];
+  h += '<div class="verdict '+r.verdict+'"><p class="big">'+V[0]+'</p><p style="margin:2px 0 0">'+V[1]+(S.evName?' <b>'+esc(S.evName)+'</b>':'')+'</p></div>';
+  h += '<div class="scen">'
+    + ['slow','mid','busy'].map(function(k){ var a = r.at[k]; return '<div><small>'+({slow:'Slow',mid:'Normal',busy:'Busy'})[k]+' · '+Math.round(r.orders[k])+' orders</small><b class="'+(a.profit<0?'neg':'pos')+'">'+money(a.profit)+'</b><small>you keep</small></div>'; }).join('')
+    + '</div>';
+  if(r.perHour!=null) h += '<p style="margin:4px 0 8px">Normal day: <b>'+money(r.perHour)+' per hour</b> of your time ('+r.ownerHours+' hours including travel and setup).</p>';
+  var rf = realityFactor(getLog());
+  if(rf){
+    if(isPro()){
+      var adj = costsAt(p, r.expSales * rf.f);
+      h += '<div class="notice"><b>Your reality check:</b> at your last '+rf.n+' events you sold '+Math.round(rf.f*100)+'% of what you expected. Applied here, a normal day becomes '+money(r.expSales*rf.f)+' in sales and you keep <b class="'+(adj.profit<0?'neg':'pos')+'">'+money(adj.profit)+'</b>.</div>';
+    } else {
+      h += '<div class="notice">You’ve logged '+rf.n+' events. <b>Pro</b> compares what you expected with what you sold and adjusts every new estimate by your own track record.</div>';
+    }
+  }
+  h += '<ul class="rules">' + r.rules.map(function(x){ return '<li><span class="dot '+x.level+'" aria-hidden="true"></span><span><span class="sr">'+({go:'Good: ',mid:'Caution: ',no:'Problem: '})[x.level]+'</span>'+esc(x.text)+'</span></li>'; }).join('') + '</ul>';
+  if(r.expSales>0 && r.be!=null){
+    h += '<h3>Your limits</h3><p class="hint">The most you can agree to and still break even at 60% of a normal day. These are walk-away numbers, not opening offers: the counter-offer message asks for less.</p><div class="kv">';
+    if(p.feeFlat>0 || p.feePct>0){
+      if(p.feePct>0 && p.feeFlat>0){
+        h += '<span>Keep '+pct(p.feePct)+', flat fee at most</span><span>'+(r.maxFlat==null?'no flat fee works':money(r.maxFlat))+'</span>';
+        h += '<span>Keep '+money(p.feeFlat)+', commission at most</span><span>'+(r.maxPct==null?'no commission works':pct(r.maxPct))+'</span>';
+      }
+      h += '<span>Flat fee only, at most</span><span>'+(r.maxFlatOnly==null?'—':money(r.maxFlatOnly))+'</span>';
+      h += '<span>Commission only, at most</span><span>'+(r.maxPctOnly==null?'—':pct(r.maxPctOnly))+'</span>';
+      h += '<span>Or a sales guarantee of</span><span>'+money(r.be)+'</span>';
+    }
+    h += '</div>';
+  }
+  var a = r.at.mid;
+  h += '<details><summary>Normal day, line by line</summary><div class="kv" style="margin-top:6px">'
+    + '<span>Sales ('+Math.round(r.orders.mid)+' × '+money(p.ticket)+')</span><span>'+money(a.sales)+'</span>'
+    + (a.topUp>0?'<span>Guarantee top-up</span><span>+'+money(a.topUp)+'</span>':'')
+    + '<span>Organizer fee</span><span>−'+money(a.fee)+'</span>'
+    + '<span>Food + packaging</span><span>−'+money(a.food)+'</span>'
+    + '<span>Card fees</span><span>−'+money(a.card)+'</span>'
+    + '<span>Staff</span><span>−'+money(a.staff)+'</span>'
+    + '<span>Fuel, permits, other</span><span>−'+money(a.fixed)+'</span>'
+    + '<span><b>You keep</b></span><span><b>'+money(a.profit)+'</b></span></div>'
+    + '<p class="hint" style="margin-top:6px">Before income tax. Sales tax isn’t yours, so leave it out of the average order.</p></details>';
+  $('out').innerHTML = h;
+}
+
+function renderLog(){
+  var log = getLog(), h = '';
+  if(!log.length){ $('logBody').innerHTML = '<p class="hint">Nothing saved yet. Press <b>Save to my event log</b> above.</p>'; return; }
+  var rows = log.map(function(e, i){ return {e:e, i:i, a:actualOf(e)}; });
+  var done = rows.filter(function(x){ return x.a; }).sort(function(x,y){ return (y.a.perHour||-1e9) - (x.a.perHour||-1e9); });
+  var todo = rows.filter(function(x){ return !x.a; });
+  if(todo.length){
+    h += '<h3>Planned · fill in after the event</h3>';
+    h += todo.map(function(x){
+      var e = x.e, id = e.id;
+      return '<div class="notice"><b>'+esc(e.name||'Untitled event')+'</b> '+(e.date?'· '+esc(e.date):'')+' · expected '+money(e.expSales)+' sales, '+money(e.expProfit)+' kept'
+        + '<div class="grid" style="margin-top:8px">'
+        + '<div><label for="as_'+id+'">Real sales $</label><input type="number" inputmode="decimal" id="as_'+id+'"></div>'
+        + '<div><label for="ah_'+id+'">Hours served</label><input type="number" inputmode="decimal" id="ah_'+id+'" value="'+esc(e.p.hrsOpen)+'"></div>'
+        + '<div><label for="ax_'+id+'">Surprise costs $</label><input type="number" inputmode="decimal" id="ax_'+id+'" placeholder="0"></div>'
+        + '<div><label for="aw_'+id+'">Weather</label><select id="aw_'+id+'"><option value="">—</option><option>Nice</option><option>Hot</option><option>Cold</option><option>Rain</option><option>Wind</option></select></div>'
+        + '<div style="grid-column:span 2"><label for="an_'+id+'">Notes for next year</label><input type="text" id="an_'+id+'" placeholder="e.g. parked far from the gate, sold out at 7pm"></div>'
+        + '</div><div class="toolbar"><button type="button" class="primary small" data-act="'+id+'">Save result</button><button type="button" class="small" data-open="'+id+'">Open in calculator</button><button type="button" class="small" data-del="'+id+'">Delete</button></div></div>';
+    }).join('');
+  }
+  if(done.length){
+    h += '<h3>How events really went · best per hour first</h3><div class="tablewrap"><table><thead><tr><th>Event</th><th>Sales</th><th>Kept</th><th>Per hour</th><th>vs. guess</th><th></th></tr></thead><tbody>';
+    h += done.map(function(x){ var e = x.e, a = x.a;
+      return '<tr><td>'+esc(e.name||'Untitled')+'<br><small class="sub">'+esc(TYPE_NAME[e.type]||'')+(e.date?' · '+esc(e.date):'')+(e.actual.weather?' · '+esc(e.actual.weather):'')+(e.actual.notes?' · '+esc(e.actual.notes):'')+'</small></td>'
+        + '<td>'+money(a.sales)+'</td><td class="'+(a.net<0?'neg':'')+'">'+money(a.net)+'</td><td>'+(a.perHour==null?'—':money(a.perHour))+'</td><td>'+(a.vsPlan==null?'—':Math.round(a.vsPlan*100)+'%')+'</td>'
+        + '<td><button type="button" class="small" data-open="'+e.id+'">Open</button> <button type="button" class="small" data-del="'+e.id+'" aria-label="Delete '+esc(e.name||'event')+'">✕</button></td></tr>';
+    }).join('') + '</tbody></table></div>';
+    if(isPro()){
+      var by = {};
+      done.forEach(function(x){ var t = x.e.type||'other'; (by[t] = by[t] || []).push(x.a); });
+      h += '<h3>By kind of event</h3><div class="tablewrap"><table><thead><tr><th>Kind</th><th>Events</th><th>Avg kept</th><th>Avg per hour</th><th>Sold vs. guess</th></tr></thead><tbody>'
+        + Object.keys(by).map(function(t){ var xs = by[t], n = xs.length, s = function(f){ var v=0,c=0; xs.forEach(function(a){ if(a[f]!=null){ v+=a[f]; c++; } }); return c? v/c : null; };
+          var vp = s('vsPlan'); return '<tr><td>'+esc(TYPE_NAME[t]||t)+'</td><td>'+n+'</td><td>'+money(s('net'))+'</td><td>'+(s('perHour')==null?'—':money(s('perHour')))+'</td><td>'+(vp==null?'—':Math.round(vp*100)+'%')+'</td></tr>'; }).join('')
+        + '</tbody></table></div>';
+    }
+  }
+  var tb = '<div class="toolbar">';
+  if(isPro()) tb += '<button type="button" class="small" id="btnCsv">Download CSV</button><button type="button" class="small" id="btnBackup">Download backup</button><label class="btn small" style="font-weight:400;margin:0">Restore backup<input type="file" id="restoreIn" accept="application/json,.json" class="sr"></label>';
+  tb += '</div>';
+  if(!isPro()) h += '<p class="hint">Free log: '+log.length+' of '+FREE_LOG+' events. Pro keeps every event, ranks them by kind, and exports to CSV.</p>';
+  $('logBody').innerHTML = h + tb;
+}
+
+function renderPro(){
+  $('proPrice').textContent = PRICE + ' once';
+  var h = '';
+  if(!isPro()){
+    var url = buyUrl();
+    h += '<p class="hint">The calculator stays free. Pro is for trucks doing events every week:</p>'
+      + '<ul class="hint" style="margin-top:0"><li><b>Unlimited event log</b> on this device (free keeps '+FREE_LOG+')</li><li><b>Your reality check</b>: every new estimate adjusted by how your past guesses really turned out</li><li>Which <b>kinds of events</b> pay you best per hour</li><li>Download a CSV for your bookkeeper, and a backup you can move to a new phone</li></ul>'
+      + (url ? '<p><a class="btn primary" href="'+esc(url)+'" target="_blank" rel="noopener" data-buy="1">Get Pro for '+PRICE+', once</a></p><p class="hint">One payment, no subscription. 30-day refund: just reply to your receipt.</p>' : '<p class="hint"><b>Pro is coming soon.</b> Everything else here is free now.</p>')
+      + '<div class="grid2"><div><label for="licKey">Already bought? Paste your license key</label><input type="text" id="licKey" autocomplete="off" spellcheck="false"></div><div style="display:flex;align-items:flex-end"><button type="button" id="btnLic">Unlock Pro</button></div></div>'
+      + '<p class="hint" id="licNote" aria-live="polite"></p>';
+  } else {
+    h += '<p class="hint">Pro is unlocked on this device. Thank you.</p>'
+      + '<p class="hint">Know other truck owners? Get your own link and earn 50% of every sale: <a href="mailto:sam@samsbench.com?subject=Booking%20Check%20affiliate%20link">email us</a>.</p>';
+  }
+  $('proBody').innerHTML = h;
+}
+function renderAll(){ renderOut(); renderLog(); renderPro(); }
+
+/* ---------- actions ---------- */
+function saveToLog(){
+  if(!LAST || !LAST.r.verdict){ note('Fill in the orders and average order first.'); return; }
+  var log = getLog();
+  if(!isPro() && log.length >= FREE_LOG){ note('The free log holds '+FREE_LOG+' events. Delete one, or get Pro for an unlimited log.'); track('log-limit'); document.getElementById('proSec').scrollIntoView({behavior:'smooth'}); return; }
+  var snap = {}; Object.keys(DEFAULTS).forEach(function(k){ snap[k] = S[k]; });
+  log.push({id:'e'+Date.now().toString(36), name:S.evName, date:S.evDate, type:S.evType, s:snap, p:LAST.p, expSales:LAST.r.expSales, expProfit:LAST.r.at.mid.profit, verdict:LAST.r.verdict, actual:null, saved:new Date().toISOString().slice(0,10)});
+  if(!setLog(log)){ note('Couldn’t save: this browser blocks storage (private mode?).'); return; }
+  track('log-save'); renderLog(); note('Saved. After the event, put in your real sales in "My event log".');
+}
+function counterText(){
+  if(!LAST || !LAST.r.verdict) return '';
+  var p = LAST.p, r = LAST.r, ev = S.evName || 'the event';
+  var t = 'Hi, thanks for the invite to '+ev+'. We’d love to be there. ';
+  if(r.verdict==='go') return t + 'The terms work for us. Please send over the vendor agreement.';
+  var fee = [];
+  if(p.feeFlat>0) fee.push(money(p.feeFlat)+' flat');
+  if(p.feePct>0) fee.push(pct(p.feePct)+' of sales');
+  t += 'We ran the numbers on '+(fee.join(' + ')||'the current terms')+(p.feeFlat>0&&p.feePct>0&&p.feeMode==='greater'?' (whichever is higher)':'')+' and at the turnout we expect it doesn’t quite work for a truck our size. ';
+  var opts = [];
+  // ask for what the trade guidance calls fair, never more than our own limit
+  var askFlat = r.maxFlatOnly!=null ? Math.min(r.maxFlatOnly, 300) : null;
+  var askPct = r.maxPctOnly!=null ? Math.min(r.maxPctOnly, 10) : null;
+  if(p.feeFlat>0 && askFlat!=null && askFlat>=p.feeFlat) askFlat = null;  // their flat fee is already fine
+  if(askFlat!=null && askFlat>=25) opts.push('a flat fee of '+money(Math.floor(askFlat/5)*5)+' with no commission');
+  if(askPct!=null && askPct>=2) opts.push(pct(Math.floor(askPct*2)/2)+' of sales with no flat fee');
+  if(r.be!=null) opts.push('the current terms with a minimum sales guarantee of '+money(Math.ceil(r.be/50)*50));
+  if(opts.length) t += 'Could you do '+opts.join(', or ')+'? ';
+  t += 'Also, could you share last year’s real attendance and how many food vendors you’re booking? Thank you!';
+  return t;
+}
+function csv(){
+  var log = getLog(), lines = [['event','date','kind','expected_sales','expected_kept','real_sales','real_kept','per_hour','sold_vs_guess','weather','notes'].join(',')];
+  function c(v){ v = v==null ? '' : String(v); return /[",\n]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; }
+  log.forEach(function(e){ var a = actualOf(e);
+    lines.push([e.name,e.date,TYPE_NAME[e.type]||e.type,Math.round(e.expSales),Math.round(e.expProfit),a?Math.round(a.sales):'',a?Math.round(a.net):'',a&&a.perHour!=null?Math.round(a.perHour):'',a&&a.vsPlan!=null?Math.round(a.vsPlan*100)+'%':'',e.actual?e.actual.weather:'',e.actual?e.actual.notes:''].map(c).join(','));
+  });
+  return lines.join('\n');
+}
+function download(name, text, type){
+  var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], {type:type})); a.download = name; document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+
+document.addEventListener('input', function(e){
+  var t = e.target;
+  if(t.id && FIELDS.indexOf(t.id)>=0){ S[t.id] = NUMS[t.id] ? t.value : t.value; save(); renderOut(); }
+});
+document.addEventListener('change', function(e){
+  var t = e.target;
+  if(t.name==='feeMode'){ S.feeMode = t.value; save(); renderOut(); }
+  if(t.id==='evType'){ S.evType = t.value; save(); }
+  if(t.id==='restoreIn' && t.files && t.files[0]){
+    var fr = new FileReader();
+    fr.onload = function(){ try{ var o = JSON.parse(fr.result); if(Array.isArray(o.log)){ setLog(o.log); renderAll(); note('Backup restored: '+o.log.length+' events.'); } else note('That file isn’t a Booking Check backup.'); }catch(err){ note('That file isn’t a Booking Check backup.'); } };
+    fr.readAsText(t.files[0]);
+  }
+});
+document.addEventListener('click', function(e){
+  var a = e.target.closest('a[data-buy]'); if(a){ track('buy-click'); return; }
+  var b = e.target.closest('button'); if(!b) return;
+  var d = b.dataset;
+  if(b.id==='btnSave') return saveToLog();
+  if(b.id==='btnShare'){ track('share'); return copy(shareLink(), 'Link copied. Whoever opens it sees these numbers.'); }
+  if(b.id==='btnCounter'){ var t = counterText(); if(!t){ note('Fill in the numbers first.'); return; } track('counter'); return copy(t, 'Message copied. Paste it into your reply to the organizer.'); }
+  if(b.id==='btnPrint'){ track('print'); window.print(); return; }
+  if(b.id==='btnReset'){ if(confirm('Clear the calculator? Your event log stays.')){ var keep = {}; ['foodPct','cardPct','staffN','wage','ticket','perHour','normalDay'].forEach(function(k){ keep[k]=S[k]; }); S = Object.assign({}, DEFAULTS, keep, {evName:'',evDate:''}); save(); toForm(); renderOut(); note('Cleared. Your own costs were kept.'); } return; }
+  if(b.id==='btnHelper'){
+    var att = num(S.att), v = Math.max(1, num(S.vendors)||1), bp = num(S.buyPct);
+    if(!att){ note('Put in the expected attendance first.'); $('att').focus(); return; }
+    var mid = Math.round(att * bp/100 / v);
+    S.oMid = mid; S.oSlow = Math.round(mid*0.6); S.oBusy = Math.round(mid*1.4);
+    save(); toForm(); renderOut(); note('Orders filled in: '+S.oSlow+' / '+S.oMid+' / '+S.oBusy+'.'); return;
+  }
+  if(b.id==='btnLic'){
+    var key = ($('licKey').value||'').trim();
+    if(!key){ $('licKey').focus(); return; }
+    if(!GUMROAD_PRODUCT_ID){ $('licNote').textContent = 'Pro isn’t on sale yet.'; return; }
+    $('licNote').textContent = 'Checking…';
+    verifyLicense(key).then(function(ok){
+      if(ok){ PRO.key = key; lsSet(PROKEY, PRO); track('pro-unlock'); renderAll(); say('Pro unlocked'); }
+      else $('licNote').textContent = 'That key didn’t work. Check it against your Gumroad receipt, or email us.';
+    }, function(){ $('licNote').textContent = 'Couldn’t reach Gumroad. Check your connection and try again.'; });
+    return;
+  }
+  if(b.id==='btnCsv'){ download('event-log.csv', csv(), 'text/csv'); return; }
+  if(b.id==='btnBackup'){ download('booking-check-backup.json', JSON.stringify({app:'booking-check', v:1, log:getLog()}), 'application/json'); return; }
+  if(d.act){
+    var log = getLog(), e2 = log.filter(function(x){ return x.id===d.act; })[0]; if(!e2) return;
+    var sv = $('as_'+d.act).value;
+    if(!has(sv)){ $('as_'+d.act).focus(); note('Put in your real sales first.'); return; }
+    e2.actual = {sales:sv, hours:$('ah_'+d.act).value, extra:$('ax_'+d.act).value, weather:$('aw_'+d.act).value, notes:$('an_'+d.act).value.trim()};
+    setLog(log); track('log-result'); renderAll(); note('Result saved.'); return;
+  }
+  if(d.open){
+    var e3 = getLog().filter(function(x){ return x.id===d.open; })[0]; if(!e3) return;
+    S = Object.assign({}, DEFAULTS, e3.s); save(); toForm(); renderOut(); $('h1s').scrollIntoView({behavior:'smooth'}); note('Opened '+(e3.name||'event')+' in the calculator.'); return;
+  }
+  if(d.del){
+    var l2 = getLog(), e4 = l2.filter(function(x){ return x.id===d.del; })[0];
+    if(e4 && confirm('Delete '+(e4.name||'this event')+' from your log?')){ setLog(l2.filter(function(x){ return x.id!==d.del; })); renderLog(); note('Deleted.'); }
+    return;
+  }
+});
+
+/* ---------- start ---------- */
+load();
+var shared = readHash();
+if(shared){
+  S = Object.assign({}, DEFAULTS, shared);
+  $('sharedNote').hidden = false;
+  $('sharedNote').innerHTML = 'You’re looking at numbers someone shared with you'+(S.evName?' for <b>'+esc(S.evName)+'</b>':'')+'. Change anything to try your own; it saves only on this device.';
+  try{ history.replaceState(null, '', location.pathname + location.search); }catch(e){}
+  save(); track('open-shared');
+}
+affCode();
+toForm(); renderAll();
+if(GC_CODE){ var gs = document.createElement('script'); gs.async = true; gs.src = '//gc.zgo.at/count.js'; gs.setAttribute('data-goatcounter', 'https://'+GC_CODE+'.goatcounter.com/count'); document.head.appendChild(gs); }
+
+/* expose the pure model for tests */
+window.__bc = {costsAt:costsAt, breakEven:breakEven, analyze:analyze, maxFor:maxFor, realityFactor:realityFactor, counterText:counterText};
+})();
+</script>
+</body>
+</html>
