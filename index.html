@@ -335,10 +335,10 @@ function note(t){ $('actNote').textContent = t; say(t); }
    compared all the way to buy-click; events fired before count.js has loaded are retried instead of lost. */
 var SRC = (function(){ try{ var v = (new URLSearchParams(location.search).get('via') || '').replace(/[^a-z0-9-]/g, '').slice(0, 24);
   if(v){ sessionStorage.setItem('bc.src', v); return v; } return sessionStorage.getItem('bc.src') || ''; }catch(e){ return ''; } })();
-function track(name, tries){ try{
-  if(!(window.goatcounter && window.goatcounter.count)){ if(GC_CODE && (tries||0) < 20) setTimeout(function(){ track(name, (tries||0) + 1); }, 500); return; }
+function track(name, tries, plain){ try{
+  if(!(window.goatcounter && window.goatcounter.count)){ if(GC_CODE && (tries||0) < 20) setTimeout(function(){ track(name, (tries||0) + 1, plain); }, 500); return; }
   window.goatcounter.count({path:name, title:name, event:true});
-  if(SRC) window.goatcounter.count({path:name + '.' + SRC, title:name + '.' + SRC, event:true});
+  if(SRC && !plain) setTimeout(function(){ try{ window.goatcounter.count({path:name + '.' + SRC, title:name + '.' + SRC, event:true}); }catch(e){} }, 400);   // GoatCounter allows 4 counts/s per visitor
 }catch(e){} }
 function lsGet(k, d){ try{ var t = localStorage.getItem(k); return t ? JSON.parse(t) : d; }catch(e){ return d; } }
 function lsSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ return false; } }
@@ -785,7 +785,7 @@ if(shared){
 affCode();
 toForm(); renderAll();
 try{ var seenPro = false; new IntersectionObserver(function(es){ es.forEach(function(x){ if(x.isIntersecting && !seenPro && !isPro()){ seenPro = true; track('pro-view'); } }); }).observe($('proSec')); }catch(e){}
-if(SRC) track('via-' + SRC);
+if(SRC) setTimeout(function(){ track('via-' + SRC, 0, true); }, 1500);   // after count.js's own pageview
 if(GC_CODE){ var gs = document.createElement('script'); gs.async = true; gs.src = '//gc.zgo.at/count.js'; gs.setAttribute('data-goatcounter', 'https://'+GC_CODE+'.goatcounter.com/count'); document.head.appendChild(gs); }
 
 window.__bc = {normP:normP, costsAt:costsAt, breakEven:breakEven, analyze:analyze, maxFor:maxFor, realityFactor:realityFactor, asks:asks, counterText:counterText, setCur:function(c){ CUR=c; }};
