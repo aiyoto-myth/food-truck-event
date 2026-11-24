@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Food Truck Event Calculator: Should You Book It? (Free) | Booking Check</title>
 <meta name="description" content="Free food truck event calculator. Enter the booth fee, commission and your costs; get a receipt of where the money goes, break-even, profit on a slow, normal and busy day, your pay per hour, and a counter-offer for the organizer. No sign-up.">
-<link rel="canonical" href="https://aiyoto-myth.github.io/food-truck-event/">
+<link rel="canonical" href="https://samsbench.com/food-truck-event/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Food Truck Event Calculator: Should You Book It?">
 <meta property="og:description" content="Booth fee + commission + your costs → a receipt of where the money goes, slow/normal/busy profit, your pay per hour, and what to ask the organizer for. Free, works on your phone.">
-<meta property="og:url" content="https://aiyoto-myth.github.io/food-truck-event/">
-<meta property="og:image" content="https://aiyoto-myth.github.io/food-truck-event/og.png">
+<meta property="og:url" content="https://samsbench.com/food-truck-event/">
+<meta property="og:image" content="https://samsbench.com/food-truck-event/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -300,7 +300,7 @@ footer{max-width:1180px;margin:0 auto;padding:10px 16px 30px;font-size:15px}
 'use strict';
 
 /* ---------- config ---------- */
-var SITE = 'https://aiyoto-myth.github.io/food-truck-event/';
+var SITE = 'https://samsbench.com/food-truck-event/';
 var APP_KEY = 'booking-check';
 var CHECKOUT = 'https://whop.com/checkout/plan_wQ2iQmNwbeY3O';   // $3 one-time
 var WHOP_PAGE = 'https://whop.com/booking-check-pro/';
@@ -581,7 +581,7 @@ function renderReceipt(){
     h += ln('Or a sales guarantee of', money(r.be));
     h += '<p class="why" style="text-align:left;font-size:14px">Each keeps you at break-even on a slow event (60% of normal). The counter-offer asks for less.</p>';
   }
-  if(!isPro()) h += '<div class="tear">Booking Check · free at aiyoto-myth.github.io/food-truck-event</div>';
+  if(!isPro()) h += '<div class="tear">Booking Check · free at samsbench.com/food-truck-event</div>';
   $('receipt').innerHTML = h; renderBar(r);
 }
 function renderBar(r){
