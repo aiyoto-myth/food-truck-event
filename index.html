@@ -302,7 +302,8 @@ footer{max-width:1180px;margin:0 auto;padding:10px 16px 30px;font-size:15px}
 /* ---------- config ---------- */
 var SITE = 'https://samsbench.com/food-truck-event/';
 var APP_KEY = 'booking-check';
-var CHECKOUT = 'https://whop.com/checkout/plan_wQ2iQmNwbeY3O';   // $3 one-time
+var CHECKOUT = 'https://whop.com/checkout/plan_wQ2iQmNwbeY3O';   // $3 one-time; with ?a=<affiliate> (returns via the product redirect)
+var CHECKOUT_HOME = 'https://whop.com/checkout/ch_felF8KFw7O4oVV1/';   // same plan, returns to samsbench.com/food-truck-event/?bought=1 (11-24)
 var WHOP_PAGE = 'https://whop.com/booking-check-pro/';
 var VERIFY = 'https://app-bizz-api.whop.site/api/verify';
 var PRICE = '$3';
@@ -494,7 +495,7 @@ function affCode(){
   try{ if(a) localStorage.setItem('bc.aff', a); else a = localStorage.getItem('bc.aff') || ''; }catch(e){}
   return a;
 }
-function buyUrl(){ var a = affCode(); return CHECKOUT + (a ? '?a=' + encodeURIComponent(a) : ''); }
+function buyUrl(){ var a = affCode(); return a ? CHECKOUT + '?a=' + encodeURIComponent(a) : CHECKOUT_HOME; }
 function verifyEmail(email){
   return fetch(VERIFY, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({app:APP_KEY, email:email})}).then(function(r){ return r.json(); });
 }
