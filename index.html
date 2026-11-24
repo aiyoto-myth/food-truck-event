@@ -310,7 +310,7 @@ var PRICE = '$3';
 var FREE_LOG = 3;
 // SHA-256 of gift codes we hand out (codes themselves are not in this file)
 var GIFT = ['1364edf18066c82a0e9ab8758c9650e6e60bd3c5b902f0a1ac0f6b4c84aebbd9','e1b74407fe9b1ef209043f0ec5a2abb143249695e84d5c77e3ad5fb339b86a23','1e8e0ff2f48d56ecc686ed2fb82f66394d4b85c6f146b5afc4b5c13d96e6ef3d','f91ee66fc0bc7ec7d974b2002b1b9f85778c119ab6d0e30e10dba0b16ee10219','ab48cfb5c57cfe42205747fa22e34eeb1b828936eaf62230a2008967e233bf89','bdaa2ec44f94f04a10ffda1be350a7d2c39efc2363f182399a94ff786f3583ed','b71da2b7b8d93723d7814fc99d687980fa6db3253f44df3e6d93bf1432b2737f','bb446c7d3ca23ffb5cb315ee0dd4dc5ff837aedef7978e589284491a14b1d539','24b7ab1e4ae00d9ed5ece181d35ea30698353cb6880957f343ee4c153ef31226','6e31bba050ede2f28cc86772ece43880c815f9007e8eea1e05e28fb5179eceb1','6a3c974b7dec4fa0e0ab534387c79db77f569fa2b978e7c178d747705ff97c68','45bcc48eb0dcb37994c6e06f35a0e38c2e437dbc504cea636ce3023711651c7c','de80ee8d0cf12ff754ff6f23db27e61e280c78c5dc3bc80541a4d6a0fc98c9ad','92e4cce812a2e2cc0909f9887a1590fe0b933d843ff72ae80d1b5293a4678e83'];
-var GC_CODE = '';
+var GC_CODE = 'bookingcheck';   // 11-24: GoatCounter site (it was off: nothing about visits was measured before)
 var KEY = 'bc.plan.v2', MINE = 'bc.plan.mine', LOGKEY = 'bc.log.v1', PROKEY = 'bc.pro';
 
 var FIELDS = ['cur','evName','evDate','evType','days','hrsOpen','hrsExtra','feeFlat','feePct','guarantee','oSlow','oMid','oBusy','ticket','perHour','foodPct','wastePct','cardPct','staffN','wage','fuel','permit','other','ownerRate','normalDay','att','vendors','buyPct'];
@@ -331,7 +331,15 @@ function money(n){ var r = Math.round(n); if(r===0) return CUR+'0'; return (r<0?
 function pct(n){ var r = Math.round(n*10)/10; return (r===Math.round(r) ? Math.round(r) : r) + '%'; }
 function say(t){ $('live').textContent=''; setTimeout(function(){ $('live').textContent=t; },30); }
 function note(t){ $('actNote').textContent = t; say(t); }
-function track(name){ try{ if(window.goatcounter && window.goatcounter.count) window.goatcounter.count({path:name,title:name,event:true}); }catch(e){} }
+/* 11-24 (signal vs noise): ?via=<code> is kept for the tab and every event is also counted as "<event>.<code>", so a channel can be
+   compared all the way to buy-click; events fired before count.js has loaded are retried instead of lost. */
+var SRC = (function(){ try{ var v = (new URLSearchParams(location.search).get('via') || '').replace(/[^a-z0-9-]/g, '').slice(0, 24);
+  if(v){ sessionStorage.setItem('bc.src', v); return v; } return sessionStorage.getItem('bc.src') || ''; }catch(e){ return ''; } })();
+function track(name, tries){ try{
+  if(!(window.goatcounter && window.goatcounter.count)){ if(GC_CODE && (tries||0) < 20) setTimeout(function(){ track(name, (tries||0) + 1); }, 500); return; }
+  window.goatcounter.count({path:name, title:name, event:true});
+  if(SRC) window.goatcounter.count({path:name + '.' + SRC, title:name + '.' + SRC, event:true});
+}catch(e){} }
 function lsGet(k, d){ try{ var t = localStorage.getItem(k); return t ? JSON.parse(t) : d; }catch(e){ return d; } }
 function lsSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ return false; } }
 
@@ -777,6 +785,7 @@ if(shared){
 affCode();
 toForm(); renderAll();
 try{ var seenPro = false; new IntersectionObserver(function(es){ es.forEach(function(x){ if(x.isIntersecting && !seenPro && !isPro()){ seenPro = true; track('pro-view'); } }); }).observe($('proSec')); }catch(e){}
+if(SRC) track('via-' + SRC);
 if(GC_CODE){ var gs = document.createElement('script'); gs.async = true; gs.src = '//gc.zgo.at/count.js'; gs.setAttribute('data-goatcounter', 'https://'+GC_CODE+'.goatcounter.com/count'); document.head.appendChild(gs); }
 
 window.__bc = {normP:normP, costsAt:costsAt, breakEven:breakEven, analyze:analyze, maxFor:maxFor, realityFactor:realityFactor, asks:asks, counterText:counterText, setCur:function(c){ CUR=c; }};
