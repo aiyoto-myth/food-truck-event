@@ -290,7 +290,7 @@ footer{max-width:1180px;margin:0 auto;padding:10px 16px 30px;font-size:15px}
 
 <footer>
   <p><b>Booking Check.</b> Everything you type stays in this browser; nothing is uploaded. Pro is sold through Whop. Made by Sam at <a href="https://samsbench.com/?via=bc-footer">samsbench.com</a>.</p>
-</footer>
+<p class="sb-contact" style="margin:10px 0 0;font-size:14px">Questions or refunds: <a href="mailto:sam@samsbench.com">sam@samsbench.com</a> · <a href="https://samsbench.com/privacy/">Privacy</a> · <a href="https://samsbench.com/terms/">Terms</a> · <a href="https://samsbench.com/refund/">Refunds (30 days)</a></p></footer>
 
 <div class="bar" id="bar"></div>
 <div class="sr" id="live" aria-live="polite"></div>
@@ -309,7 +309,11 @@ var VERIFY = 'https://app-bizz-api.whop.site/api/verify';
 var PRICE = '$3';
 var FREE_LOG = 3;
 // SHA-256 of gift codes we hand out (codes themselves are not in this file)
-var GIFT = ['1364edf18066c82a0e9ab8758c9650e6e60bd3c5b902f0a1ac0f6b4c84aebbd9','e1b74407fe9b1ef209043f0ec5a2abb143249695e84d5c77e3ad5fb339b86a23','1e8e0ff2f48d56ecc686ed2fb82f66394d4b85c6f146b5afc4b5c13d96e6ef3d','f91ee66fc0bc7ec7d974b2002b1b9f85778c119ab6d0e30e10dba0b16ee10219','ab48cfb5c57cfe42205747fa22e34eeb1b828936eaf62230a2008967e233bf89','bdaa2ec44f94f04a10ffda1be350a7d2c39efc2363f182399a94ff786f3583ed','b71da2b7b8d93723d7814fc99d687980fa6db3253f44df3e6d93bf1432b2737f','bb446c7d3ca23ffb5cb315ee0dd4dc5ff837aedef7978e589284491a14b1d539','24b7ab1e4ae00d9ed5ece181d35ea30698353cb6880957f343ee4c153ef31226','6e31bba050ede2f28cc86772ece43880c815f9007e8eea1e05e28fb5179eceb1','6a3c974b7dec4fa0e0ab534387c79db77f569fa2b978e7c178d747705ff97c68','45bcc48eb0dcb37994c6e06f35a0e38c2e437dbc504cea636ce3023711651c7c','de80ee8d0cf12ff754ff6f23db27e61e280c78c5dc3bc80541a4d6a0fc98c9ad','92e4cce812a2e2cc0909f9887a1590fe0b933d843ff72ae80d1b5293a4678e83'];
+/* 11-25 (attack fix #6, user approved): gift codes are checked by app-bizz-api; their fingerprints are no longer in this
+   page, so they can't be cracked offline. giftAsk(h) asks the server once; GIFT keeps the old call sites working. */
+var GIFT_OK = {};
+function giftAsk(h){ return fetch('https://app-bizz-api.whop.site/api/verify', {method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify({app:APP_KEY, gift:h})}).then(function(r){ return r.json(); }).then(function(j){ GIFT_OK[h] = !!(j && j.ok && j.valid); return GIFT_OK[h]; }, function(){ return false; }); }
+var GIFT = { indexOf: function(h){ return GIFT_OK[h] ? 0 : -1; }, some: function(){ return true; }, length: 1 };
 var GC_CODE = 'bookingcheck';   // 11-24: GoatCounter site (it was off: nothing about visits was measured before)
 var KEY = 'bc.plan.v2', MINE = 'bc.plan.mine', LOGKEY = 'bc.log.v1', PROKEY = 'bc.pro';
 
@@ -741,7 +745,7 @@ document.addEventListener('click', function(e){
     if(em && em.indexOf('@')<0){
       var code = em.toUpperCase().replace(/\s+/g,'');
       $('proNote').textContent = 'Checking…';
-      sha256hex(code).then(function(hx){
+      sha256hex(code).then(function(hx){ return giftAsk(hx).then(function(){ return hx; }); }).then(function(hx){
         if(GIFT.indexOf(hx)>=0){ PRO = {email:'', gift:hx.slice(0,12)}; lsSet(PROKEY, PRO); track('pro-gift'); renderAll(); say('Pro unlocked'); }
         else $('proNote').textContent = 'That code didn\u2019t work. Check it against your email, letter for letter.';
       }, function(){ $('proNote').textContent = 'This browser can\u2019t check codes. Try another browser.'; });
